@@ -1,0 +1,22 @@
+name: Run Tests
+
+on: [push, pull_request] # This triggers the workflow on push and pull request events
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20.15.0' # Change to your Node.js version
+
+    - name: Install dependencies
+      run: npm install # Use yarn if you're using yarn
+
+    - name: Run tests
+      run: npm test # Or use npm run test if you have a custom script
