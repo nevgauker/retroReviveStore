@@ -1,3 +1,4 @@
+import { generateLink } from '@/actions/download_link'
 import { Button } from '@/components/ui/button'
 import db from '@/db/db'
 import { formatCurrency } from '@/lib/formatters'
@@ -24,6 +25,7 @@ export default async function SuccessPage({
   if (product == null) return notFound()
 
   const isSuccess = paymentIntent.status === 'succeeded'
+  const link = await generateLink(product.filePath)
 
   return (
     <div className='max-w-5xl w-full mx-auto space-y-8'>
@@ -44,15 +46,10 @@ export default async function SuccessPage({
           <div className='line-clamp-3 text-muted-foreground'>
             {product.description}
           </div>
+          {/* TODO 2. generate google cloud download link and modify the button and a */}
+
           <Button className='mt-4' size='lg' asChild>
-            {isSuccess ? (
-              <a
-                href={`/products/download/${await createDownloadVerification(
-                  product.id,
-                )}`}
-              >
-                Download
-              </a>
+            {isSuccess ? (<a href={String(link)}>Download</a>
             ) : (
               <Link href={`/products/${product.id}/purchase`}>Try Again</Link>
             )}
@@ -61,15 +58,4 @@ export default async function SuccessPage({
       </div>
     </div>
   )
-}
-
-async function createDownloadVerification(productId: string) {
-  return (
-    await db.downloadVerification.create({
-      data: {
-        productId,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      },
-    })
-  ).id
 }

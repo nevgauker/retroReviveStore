@@ -1,3 +1,4 @@
+import { generateLink } from '@/actions/download_link';
 import { formatCurrency } from '@/lib/formatters'
 import {
   Button,
@@ -10,17 +11,24 @@ import {
 
 type OrderInformationProps = {
   order: { id: string; createdAt: Date; pricePaidInCents: number }
-  product: { imagePath: string; name: string; description: string }
-  downloadVerificationId: string
+  product: { imagePath: string; name: string; description: string, filePath: string }
+  // downloadVerificationId: string
 }
 
 const dateFormatter = new Intl.DateTimeFormat('en', { dateStyle: 'medium' })
 
-export function OrderInformation({
+export async function OrderInformation({
   order,
   product,
-  downloadVerificationId,
+  // downloadVerificationId,
 }: OrderInformationProps) {
+
+
+  const downloadLink = await generateLink(product.filePath)
+
+
+  console.log(`the link is : ${downloadLink}`)
+
   return (
     <>
       <Section>
@@ -61,10 +69,13 @@ export function OrderInformation({
           </Column>
           <Column align='right'>
             <Button
-              href={`${process.env.NEXT_PUBLIC_SERVER_URL}/products/download/${downloadVerificationId}`}
+              // href={`${process.env.NEXT_PUBLIC_SERVER_URL}/products/download/${downloadVerificationId}`}
               className='bg-black text-white px-6 py-4 rounded text-lg'
             >
-              Download
+              {downloadLink instanceof String ?
+                <a href={downloadLink instanceof String ? String(downloadLink) : ''}>Download</a> : <></>
+              }
+
             </Button>
           </Column>
         </Row>

@@ -39,6 +39,7 @@ export async function emailOrderHistory(
               name: true,
               imagePath: true,
               description: true,
+              filePath: true
             },
           },
         },
@@ -56,14 +57,14 @@ export async function emailOrderHistory(
   const orders = user.orders.map(async order => {
     return {
       ...order,
-      downloadVerificationId: (
-        await db.downloadVerification.create({
-          data: {
-            expiresAt: new Date(Date.now() + 24 * 1000 * 60 * 60),
-            productId: order.product.id,
-          },
-        })
-      ).id,
+      // downloadVerificationId: (
+      //   await db.downloadVerification.create({
+      //     data: {
+      //       expiresAt: new Date(Date.now() + 24 * 1000 * 60 * 60),
+      //       productId: order.product.id,
+      //     },
+      //   })
+      // ).id,
     }
   })
 
@@ -96,8 +97,8 @@ export async function createPaymentIntent(
     discountCodeId == null
       ? null
       : await db.discountCode.findUnique({
-          where: { id: discountCodeId, ...usableDiscountCodeWhere(product.id) },
-        })
+        where: { id: discountCodeId, ...usableDiscountCodeWhere(product.id) },
+      })
 
   if (discountCode == null && discountCodeId != null) {
     return { error: "Coupon has expired" }

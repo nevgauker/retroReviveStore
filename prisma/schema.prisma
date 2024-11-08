@@ -11,19 +11,19 @@ datasource db {
 }
 
 model Product {
-  id                     String                 @id @default(uuid()) @map("_id")
+  id                     String         @id @default(uuid()) @map("_id")
   name                   String
   priceInCents           Int
   filePath               String
   imagePath              String
   description            String
-  isAvailableForPurchase Boolean                @default(true)
-  createdAt              DateTime               @default(now())
-  updatedAt              DateTime               @updatedAt
+  isAvailableForPurchase Boolean        @default(true)
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
   orders                 Order[]
-  downloadVerifications  DownloadVerification[]
-  discountCodeIDs String[]   
-  discountCodes          DiscountCode[]  @relation(fields: [discountCodeIDs], references: [id])
+  // downloadVerifications  DownloadVerification[]
+  discountCodeIDs        String[]
+  discountCodes          DiscountCode[] @relation(fields: [discountCodeIDs], references: [id])
 }
 
 model User {
@@ -47,13 +47,14 @@ model Order {
   discountCode     DiscountCode? @relation(fields: [discountCodeId], references: [id], onDelete: Restrict)
 }
 
-model DownloadVerification {
-  id        String   @id @default(uuid()) @map("_id")
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-}
+//TODO 1. remove the object 
+// model DownloadVerification {
+//   id        String   @id @default(uuid()) @map("_id")
+//   expiresAt DateTime
+//   createdAt DateTime @default(now())
+//   productId String
+//   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+// }
 
 model DiscountCode {
   id             String           @id @default(uuid()) @map("_id")
@@ -66,9 +67,9 @@ model DiscountCode {
   limit          Int?
   expiresAt      DateTime?
   createdAt      DateTime         @default(now())
-  productIDs String[] 
-  products Product[]  @relation(fields: [productIDs], references: [id])
-  orders   Order[]
+  productIDs     String[]
+  products       Product[]        @relation(fields: [productIDs], references: [id])
+  orders         Order[]
 }
 
 enum DiscountCodeType {
