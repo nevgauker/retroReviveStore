@@ -8,6 +8,7 @@ import {
   Section,
   Text,
 } from '@react-email/components'
+import { useEffect, useState } from 'react';
 
 type OrderInformationProps = {
   order: { id: string; createdAt: Date; pricePaidInCents: number }
@@ -22,12 +23,7 @@ export async function OrderInformation({
   product,
   // downloadVerificationId,
 }: OrderInformationProps) {
-
-
-  const downloadLink = await generateLink(product.filePath)
-
-
-  console.log(`the link is : ${downloadLink}`)
+  const url = await generateLink(product.filePath)
 
   return (
     <>
@@ -61,7 +57,7 @@ export async function OrderInformation({
         <Img
           width='100%'
           alt={product.name}
-          src={`${process.env.NEXT_PUBLIC_SERVER_URL}${product.imagePath}`}
+          src={product.imagePath}
         />
         <Row className='mt-8'>
           <Column className='align-bottom'>
@@ -72,10 +68,7 @@ export async function OrderInformation({
               // href={`${process.env.NEXT_PUBLIC_SERVER_URL}/products/download/${downloadVerificationId}`}
               className='bg-black text-white px-6 py-4 rounded text-lg'
             >
-              {downloadLink instanceof String ?
-                <a href={downloadLink instanceof String ? String(downloadLink) : ''}>Download</a> : <></>
-              }
-
+              <a href={String(url)}>Download</a>
             </Button>
           </Column>
         </Row>

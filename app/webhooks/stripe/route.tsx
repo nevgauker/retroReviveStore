@@ -53,6 +53,10 @@ export async function POST(req: NextRequest) {
       })
     }
 
+    console.log(`image url : ${product.imagePath}`)
+    console.log(`product url : ${product.filePath}`)
+
+
     await resend.emails.send({
       from: `Support <${process.env.SENDER_EMAIL}>`,
       to: email,
