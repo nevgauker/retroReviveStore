@@ -64,10 +64,7 @@ export function ProductForm({ product }: { product?: Product | null }) {
       </div>
       <div className='space-y-2'>
         <Label htmlFor='file'>File</Label>
-        <Input type='text' id='file' name='file' required={product == null} />
-        {product != null && (
-          <div className='text-muted-foreground'>{product.filePath}</div>
-        )}
+        <Input defaultValue={product?.filePath} type='text' id='file' name='file' required={product == null} />
         {error?.file && <div className='text-destructive'>{error.file}</div>}
       </div>
       <div className='space-y-2'>

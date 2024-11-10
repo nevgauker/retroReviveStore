@@ -69,7 +69,7 @@ export async function emailOrderHistory(
   })
 
   const data = await resend.emails.send({
-    from: `Support <${process.env.SENDER_EMAIL}>`,
+    from: `Retro Revive <${process.env.SENDER_EMAIL}>`,
     to: user.email,
     subject: "Order History",
     react: <OrderHistoryEmail orders={await Promise.all(orders)} />,

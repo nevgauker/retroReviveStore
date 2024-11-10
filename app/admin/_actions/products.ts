@@ -15,7 +15,6 @@ import {
   extractFilenameFromURL,
   FOLDER,
   IMAGES_FOLDER,
-  updateProductFiles,
 } from '@/lib/productFiles'
 import { error } from 'console'
 import { fileDataToSave, fileExists } from '@/lib/files'

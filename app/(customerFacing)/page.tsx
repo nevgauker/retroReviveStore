@@ -33,12 +33,12 @@ export default function HomePage() {
       <ProductGridSection
         title='Most Popular'
         productsFetcher={getMostPopularProducts}
-        bannerImageName='/most.png'
+        bannerImageName='/most.jpg'
       />
       <ProductGridSection
         title='Newest'
         productsFetcher={getNewestProducts}
-        bannerImageName='/new.png'
+        bannerImageName='/new.jpg'
       />
     </main>
   )

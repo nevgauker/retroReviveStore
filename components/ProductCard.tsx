@@ -34,6 +34,7 @@ export function ProductCard({
       <CardHeader>
         <CardTitle>{name}</CardTitle>
         <CardDescription>{formatCurrency(priceInCents / 100)}</CardDescription>
+        <CardDescription>{'500 Images,aspect ratio: square, sizes: 960-1120'}</CardDescription>
       </CardHeader>
       <CardContent className='flex-grow'>
         <p className='line-clamp-4'>{description}</p>
