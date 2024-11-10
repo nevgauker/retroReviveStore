@@ -76,6 +76,7 @@ export async function emailOrderHistory(
   })
 
   if (data.error) {
+    console.log(data.error)
     return { error: "There was an error sending your email. Please try again." }
   }
 
