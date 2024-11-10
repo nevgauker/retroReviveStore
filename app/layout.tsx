@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { cn } from '@/lib/utils'
-import { Footer } from 'react-day-picker'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
