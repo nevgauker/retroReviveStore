@@ -2,6 +2,7 @@
 
 import db from '@/db/db'
 import { DiscountCodeType } from '@prisma/client'
+import { revalidatePath } from 'next/cache'
 import { notFound, redirect } from 'next/navigation'
 import { z } from 'zod'
 
@@ -50,7 +51,7 @@ export async function addDiscountCode(prevState: unknown, formData: FormData) {
 
   const data = result.data
 
-  await db.discountCode.create({
+  const res = await db.discountCode.create({
     data: {
       code: data.code,
       discountAmount: data.discountAmount,
@@ -65,6 +66,10 @@ export async function addDiscountCode(prevState: unknown, formData: FormData) {
     },
   })
 
+
+  console.log(res)
+
+  revalidatePath('admin/discount-codes')
   redirect('/admin/discount-codes')
 }
 

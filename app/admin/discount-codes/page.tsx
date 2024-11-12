@@ -74,10 +74,33 @@ function getUnexpiredDiscountCodes() {
 }
 
 export default async function DiscountCodesPage() {
-  const [expiredDiscountCodes, unexpiredDiscountCodes] = await Promise.all([
-    getExpiredDiscountCodes(),
-    getUnexpiredDiscountCodes(),
-  ])
+
+  const allDiscountCodes = await db.discountCode.findMany({
+    select: SELECT_FIELDS,
+    orderBy: { createdAt: 'asc' },
+  });
+
+  // Filter expired and unexpired discount codes locally
+  const expiredDiscountCodes = allDiscountCodes.filter((discountCode) => {
+    const isExpiredByLimit =
+      discountCode.limit !== null && discountCode.uses >= discountCode.limit;
+    const isExpiredByDate =
+      discountCode.expiresAt !== null && discountCode.expiresAt <= new Date();
+    return isExpiredByLimit || isExpiredByDate;
+  });
+
+  const unexpiredDiscountCodes = allDiscountCodes.filter((discountCode) => {
+    const isExpiredByLimit =
+      discountCode.limit !== null && discountCode.uses >= discountCode.limit;
+    const isExpiredByDate =
+      discountCode.expiresAt !== null && discountCode.expiresAt <= new Date();
+    return !isExpiredByLimit && !isExpiredByDate;
+  });
+
+  // const [expiredDiscountCodes, unexpiredDiscountCodes] = await Promise.all([
+  //   getExpiredDiscountCodes(),
+  //   getUnexpiredDiscountCodes(),
+  // ])
 
   return (
     <>
