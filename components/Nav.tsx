@@ -12,16 +12,26 @@ export default function Nav({ children }: { children: ReactNode }) {
   )
 }
 
-export function NavLink(props: Omit<ComponentProps<typeof Link>, 'className'>) {
+type NavLinkProps = Omit<ComponentProps<typeof Link>, 'className'> & {
+  exact?: boolean
+}
+
+export function NavLink({ href, exact = false, ...props }: NavLinkProps) {
   const pathname = usePathname()
+  const isActive = exact ? pathname === href : pathname.startsWith(String(href))
 
   return (
     <Link
+      href={href}
       {...props}
       className={cn(
-        'p-4 hover:bg-secondary hover:text-secondary-foreground focus-visible:bg-secondary focus-visible:text-secondary-foreground',
-        pathname === props.href && 'bg-background text-foreground',
+        'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+        'hover:bg-secondary hover:text-secondary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-secondary',
+        isActive
+          ? 'bg-secondary text-secondary-foreground'
+          : 'text-muted-foreground'
       )}
+      aria-current={isActive ? 'page' : undefined}
     />
   )
 }

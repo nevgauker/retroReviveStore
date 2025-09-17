@@ -27,21 +27,36 @@ export function ProductCard({
   imagePath,
 }: ProductCardProps) {
   return (
-    <Card className='flex overflow-hidden flex-col'>
-      <div className='relative w-full h-auto aspect-video'>
-        <Image src={imagePath} fill alt={name} />
+    <Card className='flex flex-col overflow-hidden transition hover:shadow-lg'>
+      <div className='relative w-full aspect-square'>
+        <Image
+          src={imagePath}
+          alt={name}
+          fill
+          className='object-cover'
+          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px'
+          priority={false}
+        />
       </div>
+
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
-        <CardDescription>{formatCurrency(priceInCents / 100)}</CardDescription>
-        <CardDescription>{'500 Images,aspect ratio: square, sizes: 960-1120'}</CardDescription>
+        <CardTitle className='truncate'>{name}</CardTitle>
+        <p className='text-lg font-semibold text-indigo-600'>
+          {formatCurrency(priceInCents / 100)}
+        </p>
       </CardHeader>
+
       <CardContent className='flex-grow'>
-        <p className='line-clamp-4'>{description}</p>
+        <CardDescription className='line-clamp-3'>
+          {description}
+        </CardDescription>
       </CardContent>
+
       <CardFooter>
         <Button asChild size='lg' className='w-full'>
-          <Link href={`/products/${id}/purchase`}>Purchase</Link>
+          <Link href={`/products/${id}/purchase`} aria-label={`Purchase ${name}`}>
+            Purchase
+          </Link>
         </Button>
       </CardFooter>
     </Card>
@@ -50,23 +65,21 @@ export function ProductCard({
 
 export function ProductCardSkeleton() {
   return (
-    <Card className='overflow-hidden flex flex-col animate-pulse'>
-      <div className='w-full aspect-video bg-gray-300' />
+    <Card className='flex flex-col overflow-hidden animate-pulse'>
+      <div className='w-full aspect-square bg-gray-300' />
       <CardHeader>
         <CardTitle>
-          <div className='w-3/4 h-6 rounded-full bg-gray-300' />
+          <div className='h-6 w-3/4 rounded-full bg-gray-300' />
         </CardTitle>
-        <CardDescription>
-          <div className='w-1/2 h-4 rounded-full bg-gray-300' />
-        </CardDescription>
+        <div className='h-5 w-1/2 rounded-full bg-gray-300' />
       </CardHeader>
       <CardContent className='space-y-2'>
-        <div className='w-full h-4 rounded-full bg-gray-300' />
-        <div className='w-full h-4 rounded-full bg-gray-300' />
-        <div className='w-3/4 h-4 rounded-full bg-gray-300' />
+        <div className='h-4 w-full rounded-full bg-gray-300' />
+        <div className='h-4 w-full rounded-full bg-gray-300' />
+        <div className='h-4 w-3/4 rounded-full bg-gray-300' />
       </CardContent>
       <CardFooter>
-        <Button className='w-full' disabled size='lg'></Button>
+        <Button className='w-full' disabled size='lg' />
       </CardFooter>
     </Card>
   )
