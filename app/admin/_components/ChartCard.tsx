@@ -18,7 +18,6 @@ import { subDays } from 'date-fns'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ReactNode, useState } from 'react'
 import { DateRange } from 'react-day-picker'
-import { date } from 'zod'
 
 type ChartCardProps = {
   title: string
@@ -57,10 +56,10 @@ export function ChartCard({
   }
 
   return (
-    <Card>
+    <Card className="border-border/70 bg-white/90 shadow-sm">
       <CardHeader>
-        <div className='flex gap-4 justify-between items-center'>
-          <CardTitle>{title}</CardTitle>
+        <div className='flex flex-wrap gap-4 justify-between items-center'>
+          <CardTitle className="text-lg">{title}</CardTitle>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='outline'>{selectedRangeLabel}</Button>
@@ -78,7 +77,7 @@ export function ChartCard({
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Custom</DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
-                  <div>
+                  <div className="p-2">
                     <Calendar
                       mode='range'
                       disabled={{ after: new Date() }}

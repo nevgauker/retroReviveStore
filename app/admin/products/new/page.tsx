@@ -4,7 +4,10 @@ import { ProductForm } from '../_components/ProductForm'
 export default function NewProductPage() {
   return (
     <>
-      <PageHeader>Add Product</PageHeader>
+      <PageHeader
+        title="Add product"
+        subtitle="Create a new listing with pricing, imagery, and download file."
+      />
       <ProductForm />
     </>
   )

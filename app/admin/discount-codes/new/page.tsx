@@ -10,7 +10,10 @@ export default async function NewDiscountCodePage() {
 
   return (
     <>
-      <PageHeader>Add Product</PageHeader>
+      <PageHeader
+        title="Add coupon"
+        subtitle="Create a new discount code with limits and eligible products."
+      />
       <DiscountCodeForm products={products} />
     </>
   )

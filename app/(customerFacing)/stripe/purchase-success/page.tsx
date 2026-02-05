@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Stripe from 'stripe'
+import PageHeader from '@/components/PageHeader'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
@@ -28,12 +29,19 @@ export default async function SuccessPage({
   const link = await generateLink(product.filePath)
 
   return (
-    <div className='max-w-5xl w-full mx-auto space-y-8'>
-      <h1 className='text-4xl font-bold'>
-        {isSuccess ? 'Success!' : 'Error!'}
-      </h1>
-      <div className='flex gap-4 items-center'>
-        <div className='aspect-video flex-shrink-0 w-1/3 relative'>
+    <div className="space-y-10">
+      <PageHeader
+        eyebrow={isSuccess ? 'Payment complete' : 'Payment failed'}
+        title={isSuccess ? 'Your download is ready' : 'We could not process the payment'}
+        subtitle={
+          isSuccess
+            ? 'Your receipt has been sent to your email. Download your files below.'
+            : 'Please try again or use a different payment method.'
+        }
+      />
+
+      <div className="grid gap-6 rounded-2xl border border-border/70 bg-white/90 p-6 shadow-sm md:grid-cols-[0.9fr_1.1fr]">
+        <div className='relative h-56 w-full overflow-hidden rounded-xl border border-border/70'>
           <Image
             src={product.imagePath}
             fill
@@ -41,17 +49,25 @@ export default async function SuccessPage({
             className='object-cover'
           />
         </div>
-        <div>
-          <h1 className='text-2xl font-bold'>{product.name}</h1>
-          <div className='line-clamp-3 text-muted-foreground'>
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+              Order summary
+            </p>
+            <h1 className='text-2xl font-semibold'>{product.name}</h1>
+          </div>
+          <div className='line-clamp-3 text-sm text-muted-foreground'>
             {product.description}
           </div>
-          {/* TODO 2. generate google cloud download link and modify the button and a */}
+          <div className="text-sm text-muted-foreground">
+            {formatCurrency(product.priceInCents / 100)} · Instant delivery
+          </div>
 
-          <Button className='mt-4' size='lg' asChild>
-            {isSuccess ? (<a href={String(link)}>Download</a>
+          <Button className='mt-2 w-full sm:w-auto' size='lg' asChild>
+            {isSuccess ? (
+              <a href={String(link)}>Download files</a>
             ) : (
-              <Link href={`/products/${product.id}/purchase`}>Try Again</Link>
+              <Link href={`/products/${product.id}/purchase`}>Try again</Link>
             )}
           </Button>
         </div>

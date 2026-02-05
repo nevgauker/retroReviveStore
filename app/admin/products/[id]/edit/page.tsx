@@ -11,7 +11,10 @@ export default async function EditProductPage({
 
   return (
     <>
-      <PageHeader>Edit Product</PageHeader>
+      <PageHeader
+        title="Edit product"
+        subtitle="Update pricing, descriptions, and availability."
+      />
       <ProductForm product={product} />
     </>
   )

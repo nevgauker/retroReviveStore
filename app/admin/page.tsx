@@ -23,21 +23,12 @@ import {
   min,
   startOfDay,
   startOfWeek,
-  subDays,
 } from 'date-fns'
-import { Search } from 'lucide-react'
-import { ReactNode } from 'react'
 import { UsersByDayChart } from './_components/charts/UsersByDayChart'
 import { RevenueByProductChart } from './_components/charts/RevenueByProductChart'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
 import { RANGE_OPTIONS, getRangeOption } from '@/lib/rangeOptions'
 import { ChartCard } from './_components/ChartCard'
+import { PageHeader } from './_components/PageHeader'
 
 async function getSalesData(
   createdAfter: Date | null,
@@ -58,6 +49,14 @@ async function getSalesData(
       orderBy: { createdAt: 'asc' },
     }),
   ])
+
+  if (chartData.length === 0) {
+    return {
+      chartData: [],
+      amount: (data._sum.pricePaidInCents || 0) / 100,
+      numberOfSales: data._count,
+    }
+  }
 
   const { array, format } = getChartDateArray(
     createdAfter || startOfDay(chartData[0].createdAt),
@@ -103,6 +102,17 @@ async function getUserData(
       orderBy: { createdAt: 'asc' },
     }),
   ])
+
+  if (chartData.length === 0) {
+    return {
+      chartData: [],
+      userCount,
+      averageValuePerUser:
+        userCount === 0
+          ? 0
+          : (orderData._sum.pricePaidInCents || 0) / userCount / 100,
+    }
+  }
 
   const { array, format } = getChartDateArray(
     createdAfter || startOfDay(chartData[0].createdAt),
@@ -228,6 +238,10 @@ export default async function AdminDashboard({
 
   return (
     <>
+      <PageHeader
+        title="Dashboard"
+        subtitle="A snapshot of sales, customers, and product performance."
+      />
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
         <DashboardCard
           title='Sales'
@@ -247,7 +261,7 @@ export default async function AdminDashboard({
           body={formatNumber(productData.activeCount)}
         />
       </div>
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
         <ChartCard
           title='Total Sales'
           queryKey='totalSalesRange'
@@ -282,13 +296,13 @@ type DashboardCardProps = {
 
 function DashboardCard({ title, subtitle, body }: DashboardCardProps) {
   return (
-    <Card>
+    <Card className="border-border/70 bg-white/90 shadow-sm">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-lg">{title}</CardTitle>
         <CardDescription>{subtitle}</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>{body}</p>
+        <p className="text-3xl font-semibold text-foreground">{body}</p>
       </CardContent>
     </Card>
   )

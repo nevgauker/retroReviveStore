@@ -1,10 +1,8 @@
 import db from '@/db/db'
 import { notFound } from 'next/navigation'
-import Stripe from 'stripe'
 import { CheckoutForm } from './_components/CheckoutForm'
 import { usableDiscountCodeWhere } from '@/lib/discountCodeHelpers'
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+import PageHeader from '@/components/PageHeader'
 
 export default async function PurchasePage({
   params: { id },
@@ -20,7 +18,14 @@ export default async function PurchasePage({
     coupon == null ? undefined : await getDiscountCode(coupon, product.id)
 
   return (
-    <CheckoutForm product={product} discountCode={discountCode || undefined} />
+    <div className="space-y-10">
+      <PageHeader
+        eyebrow="Checkout"
+        title="Secure purchase"
+        subtitle="Complete your order and receive an instant download link via email."
+      />
+      <CheckoutForm product={product} discountCode={discountCode || undefined} />
+    </div>
   )
 }
 

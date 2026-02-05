@@ -1,40 +1,54 @@
+import PageHeader from '@/components/PageHeader'
+
 function AboutPage() {
-    return (
-        <div className="min-h-screen py-10 bg-gray-100 flex items-center">
-            <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6">About Us</h1>
+  return (
+    <div className="space-y-12">
+      <PageHeader
+        eyebrow="Our story"
+        title="Retro aesthetics, modern reliability"
+        subtitle="Retro Revive is a portfolio-grade marketplace prototype built to demonstrate thoughtful product design. Every touchpoint is designed to feel premium, clear, and trustworthy."
+      />
 
-                <p className="text-gray-700 mb-4">
-                    Welcome to Retro Revive! We are a digital marketplace dedicated to providing high-quality digital assets such as image bundles, templates, and other creative resources for professionals and enthusiasts alike.
-                </p>
+      <div className="grid gap-6 md:grid-cols-2">
+        {[
+          {
+            title: 'Our mission',
+            copy: 'Empower creators with rare, nostalgia-driven assets that speed up ideation and elevate presentation work.',
+          },
+          {
+            title: 'Curated drops',
+            copy: 'Each bundle is selected for craft, consistency, and real-world usability. No filler, no repeats.',
+          },
+          {
+            title: 'Quality-first',
+            copy: 'We test every file, include licensing clarity, and package assets for immediate download.',
+          },
+          {
+            title: 'Privacy-minded',
+            copy: 'Purchases are linked to email only. We never collect more than needed for delivery.',
+          },
+        ].map((item) => (
+          <div
+            key={item.title}
+            className="rounded-2xl border border-border/70 bg-white/80 p-6 shadow-sm"
+          >
+            <h2 className="text-2xl font-semibold">{item.title}</h2>
+            <p className="mt-3 text-sm text-muted-foreground">{item.copy}</p>
+          </div>
+        ))}
+      </div>
 
-                <section className="mb-6">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Our Mission</h2>
-                    <p className="text-gray-700">
-                        Our mission is to empower creators by offering carefully curated digital assets that save time and enhance their work. Whether you are a designer, photographer, or digital marketer, we are here to provide you with resources that elevate your projects and streamline your creative workflow.
-                    </p>
-                </section>
+      <div className="rounded-2xl border border-border/70 bg-secondary p-6 text-sm text-muted-foreground">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em]">
+          Portfolio note
+        </p>
+        <p className="mt-3">
+          Retro Revive is a demonstration project meant to showcase UX, product
+          strategy, and UI craft for a modern digital commerce experience.
+        </p>
+      </div>
+    </div>
+  )
+}
 
-                <section className="mb-6">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">What We Offer</h2>
-                    <p className="text-gray-700">
-                        Our store specializes in bundles that are easy to download and access anytime. We believe in simplicity and convenience, and our digital assets are designed with these values in mind. From image bundles to templates, each product is carefully crafted and stored for instant access.
-                    </p>
-                </section>
-
-                <section>
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Why Choose Us?</h2>
-                    <p className="text-gray-700">
-                        At Retro Revive, we prioritize quality, security, and user satisfaction. Your purchase is linked directly to your email, ensuring easy access to your products at any time without unnecessary personal data collection. We are committed to building a trusted marketplace that respects your privacy and meets your creative needs.
-                    </p>
-                </section>
-
-                <footer className="text-gray-600 mt-8 text-sm">
-                    <p>&copy; {new Date().getFullYear()} Retro Revive. All rights reserved.</p>
-                </footer>
-            </div>
-        </div>
-    );
-};
-
-export default AboutPage;
+export default AboutPage

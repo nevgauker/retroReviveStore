@@ -1,91 +1,82 @@
 import Link from 'next/link'
-import Image from 'next/image'
 
 export default function Footer() {
-    return (
-        <footer className="bg-gray-900 text-gray-300 mt-12">
-            {/* Full width background */}
-            <div className="w-full">
-                {/* Centered content */}
-                <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Logo & Brand */}
-                        <div className="flex flex-col items-start space-y-4">
-                            <div className="flex items-center space-x-2">
-                                <Image
-                                    src="/RetroRevive_logo.png"
-                                    alt="Retro Revive logo"
-                                    width={40}
-                                    height={40}
-                                />
-                                <span className="text-xl font-bold tracking-wide text-white">
-                                    Retro Revive
-                                </span>
-                            </div>
-                            <p className="text-sm text-gray-400">
-                                Bringing vintage vibes back to life. Shop the latest curated
-                                retro finds and timeless styles.
-                            </p>
-                        </div>
+  return (
+    <footer className="mt-16 border-t border-border/60 bg-white/80">
+      <div className="container grid gap-10 py-12 md:grid-cols-[1.2fr_0.8fr_1fr]">
+        <div className="space-y-4">
+          <p className="text-2xl font-semibold text-foreground">Retro Revive</p>
+          <p className="text-sm text-muted-foreground">
+            A curated marketplace for nostalgic digital assets. Designed to feel
+            vintage, delivered with modern speed.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
+              Instant Downloads
+            </span>
+            <span className="rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
+              Weekly Drops
+            </span>
+            <span className="rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
+              Secure Checkout
+            </span>
+          </div>
+        </div>
 
-                        {/* Quick Links */}
-                        <div className="flex flex-col space-y-3">
-                            <h2 className="text-lg font-semibold text-white">Quick Links</h2>
-                            <nav className="flex flex-col space-y-2 text-sm">
-                                <Link href="/about" className="hover:text-white">
-                                    About
-                                </Link>
-                                <Link href="/contact" className="hover:text-white">
-                                    Contact
-                                </Link>
-                                <Link href="/terms" className="hover:text-white">
-                                    Terms of Use
-                                </Link>
-                                <Link href="/privacy" className="hover:text-white">
-                                    Privacy Policy
-                                </Link>
-                            </nav>
-                        </div>
+        <div className="space-y-3 text-sm">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            Explore
+          </p>
+          <div className="flex flex-col gap-2">
+            <Link className="hover:text-foreground" href="/products">
+              All Products
+            </Link>
+            <Link className="hover:text-foreground" href="/orders">
+              My Orders
+            </Link>
+            <Link className="hover:text-foreground" href="/about">
+              About
+            </Link>
+            <Link className="hover:text-foreground" href="/contact">
+              Contact
+            </Link>
+          </div>
+        </div>
 
-                        {/* Newsletter or Socials */}
-                        <div className="flex flex-col space-y-3">
-                            <h2 className="text-lg font-semibold text-white">Stay Connected</h2>
-                            <p className="text-sm text-gray-400">
-                                Subscribe to our newsletter for exclusive offers & retro drops.
-                            </p>
-                            <form className="flex">
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    className="w-full rounded-l-md px-3 py-2 text-gray-900 focus:outline-none"
-                                />
-                                <button
-                                    type="submit"
-                                    className="bg-red-500 px-4 py-2 rounded-r-md text-white hover:bg-red-600 transition"
-                                >
-                                    Subscribe
-                                </button>
-                            </form>
-                            <div className="flex space-x-4 mt-3">
-                                <Link href="#" aria-label="Instagram" className="hover:text-white">
-                                    <i className="fab fa-instagram"></i>
-                                </Link>
-                                <Link href="#" aria-label="Twitter" className="hover:text-white">
-                                    <i className="fab fa-twitter"></i>
-                                </Link>
-                                <Link href="#" aria-label="Facebook" className="hover:text-white">
-                                    <i className="fab fa-facebook"></i>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
+        <div className="space-y-4 text-sm">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            Stay in the loop
+          </p>
+          <p className="text-muted-foreground">
+            Get a monthly digest of new collections and limited releases.
+          </p>
+          <form className="flex flex-col gap-3 sm:flex-row">
+            <input
+              type="email"
+              placeholder="Email address"
+              className="flex-1 rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
+            <button
+              type="submit"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
+            >
+              Subscribe
+            </button>
+          </form>
+          <div className="flex gap-4 text-xs text-muted-foreground">
+            <Link className="hover:text-foreground" href="/terms">
+              Terms
+            </Link>
+            <Link className="hover:text-foreground" href="/privacy">
+              Privacy
+            </Link>
+          </div>
+        </div>
+      </div>
 
-                    {/* Divider */}
-                    <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-400">
-                        <p>&copy; {new Date().getFullYear()} Retro Revive. All rights reserved.</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    )
+      <div className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
+        &copy; {new Date().getFullYear()} Retro Revive. All rights reserved.
+      </div>
+    </footer>
+  )
 }

@@ -2,6 +2,7 @@
 
 import { emailOrderHistory } from '@/actions/orders'
 import { Button } from '@/components/ui/button'
+import PageHeader from '@/components/PageHeader'
 import {
   Card,
   CardContent,
@@ -21,27 +22,42 @@ import { useFormState, useFormStatus } from 'react-dom'
 export default function MyOrdersPage() {
   const [data, action] = useFormState(emailOrderHistory, {})
   return (
-    <form action={action} className='max-2-xl mx-auto'>
-      <Card>
-        <CardHeader>
-          <CardTitle>My Orders</CardTitle>
-          <CardDescription>
-            Enter your email and we will email you your order history and
-            download links
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className='space-y-2'>
-            <Label htmlFor='email'>Email</Label>
-            <Input type='email' required name='email' id='email' />
-            {data.error && <div className='text-destructive'>{data.error}</div>}
-          </div>
-        </CardContent>
-        <CardFooter>
-          {data.message ? <p>{data.message}</p> : <SubmitButton />}
-        </CardFooter>
-      </Card>
-    </form>
+    <div className="space-y-10">
+      <PageHeader
+        eyebrow="Order history"
+        title="Retrieve your downloads"
+        subtitle="No account required. Enter the email used at checkout and we'll send your secure links."
+      />
+      <form action={action} className='max-w-2xl'>
+        <Card className="border-border/70 bg-white/90 shadow-sm">
+          <CardHeader>
+            <CardTitle>Send me my purchases</CardTitle>
+            <CardDescription>
+              We only use your email to locate your order history and send your
+              download links.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className='space-y-2'>
+              <Label htmlFor='email'>Email</Label>
+              <Input type='email' required name='email' id='email' />
+              {data.error && <div className='text-destructive'>{data.error}</div>}
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col items-start gap-3">
+            {data.message ? (
+              <p className="text-sm text-muted-foreground">{data.message}</p>
+            ) : (
+              <SubmitButton />
+            )}
+            <p className="text-xs text-muted-foreground">
+              Need help? Reach out via the contact page and we'll verify your
+              purchase.
+            </p>
+          </CardFooter>
+        </Card>
+      </form>
+    </div>
   )
 }
 

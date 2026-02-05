@@ -1,9 +1,16 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Fraunces, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { cn } from '@/lib/utils'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-display',
+})
 
 export const metadata: Metadata = {
   title: 'Digital Ecommerce',
@@ -21,7 +28,8 @@ export default function RootLayout({
       <body
         className={cn(
           'bg-background min-h-screen font-sans antialiased',
-          inter.variable,
+          spaceGrotesk.variable,
+          fraunces.variable,
         )}
       >
         {children}

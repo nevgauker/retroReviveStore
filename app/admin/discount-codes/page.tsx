@@ -36,13 +36,6 @@ import {
   DeleteDropdownItem,
 } from './_components/DiscountCodeActions'
 
-const WHERE_EXPIRED: Prisma.DiscountCodeWhereInput = {
-  OR: [
-    { limit: { not: null, lte: db.discountCode.fields.uses } },
-    { expiresAt: { not: null, lte: new Date() } },
-  ],
-}
-
 const SELECT_FIELDS: Prisma.DiscountCodeSelect = {
   id: true,
   allProducts: true,
@@ -56,22 +49,9 @@ const SELECT_FIELDS: Prisma.DiscountCodeSelect = {
   products: { select: { name: true } },
   _count: { select: { orders: true } },
 }
-
-function getExpiredDiscountCodes() {
-  return db.discountCode.findMany({
-    select: SELECT_FIELDS,
-    where: WHERE_EXPIRED,
-    orderBy: { createdAt: 'asc' },
-  })
-}
-
-function getUnexpiredDiscountCodes() {
-  return db.discountCode.findMany({
-    select: SELECT_FIELDS,
-    where: { NOT: WHERE_EXPIRED },
-    orderBy: { createdAt: 'asc' },
-  })
-}
+type DiscountCodeRow = Prisma.DiscountCodeGetPayload<{
+  select: typeof SELECT_FIELDS
+}>
 
 export default async function DiscountCodesPage() {
 
@@ -97,26 +77,24 @@ export default async function DiscountCodesPage() {
     return !isExpiredByLimit && !isExpiredByDate;
   });
 
-  // const [expiredDiscountCodes, unexpiredDiscountCodes] = await Promise.all([
-  //   getExpiredDiscountCodes(),
-  //   getUnexpiredDiscountCodes(),
-  // ])
-
   return (
     <>
-      <div className='flex justify-between items-center gap-4'>
-        <PageHeader>Coupons</PageHeader>
-        <Button asChild>
-          <Link href='/admin/discount-codes/new'>Add Coupon</Link>
-        </Button>
-      </div>
+      <PageHeader
+        title="Coupons"
+        subtitle="Manage discount codes, expiration rules, and usage limits."
+        actions={
+          <Button asChild>
+            <Link href='/admin/discount-codes/new'>Add Coupon</Link>
+          </Button>
+        }
+      />
       <DiscountCodesTable
         discountCodes={unexpiredDiscountCodes}
         canDeactivate
       />
 
-      <div className='mt-8'>
-        <h2 className='text-xl font-bold'>Expired Coupons</h2>
+      <div className='space-y-4'>
+        <h2 className='text-xl font-semibold text-foreground'>Expired coupons</h2>
         <DiscountCodesTable discountCodes={expiredDiscountCodes} isInactive />
       </div>
     </>
@@ -124,7 +102,7 @@ export default async function DiscountCodesPage() {
 }
 
 type DiscountCodesTableProps = {
-  discountCodes: Awaited<ReturnType<typeof getUnexpiredDiscountCodes>>
+  discountCodes: DiscountCodeRow[]
   isInactive?: boolean
   canDeactivate?: boolean
 }
@@ -134,90 +112,100 @@ function DiscountCodesTable({
   isInactive = false,
   canDeactivate = false,
 }: DiscountCodesTableProps) {
+  if (discountCodes.length === 0) {
+    return (
+      <div className="rounded-2xl border border-border/70 bg-white/90 p-6 text-sm text-muted-foreground">
+        No coupons found.
+      </div>
+    )
+  }
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className='w-0'>
-            <span className='sr-only'>Is Active</span>
-          </TableHead>
-          <TableHead>Code</TableHead>
-          <TableHead>Discount</TableHead>
-          <TableHead>Expires</TableHead>
-          <TableHead>Remaining Uses</TableHead>
-          <TableHead>Orders</TableHead>
-          <TableHead>Products</TableHead>
-          <TableHead className='w-0'>
-            <span className='sr-only'>Actions</span>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {discountCodes.map(discountCode => (
-          <TableRow key={discountCode.id}>
-            <TableCell>
-              {discountCode.isActive && !isInactive ? (
-                <>
-                  <span className='sr-only'>Active</span>
-                  <CheckCircle2 />
-                </>
-              ) : (
-                <>
-                  <span className='sr-only'>Inactive</span>
-                  <XCircle className='stroke-destructive' />
-                </>
-              )}
-            </TableCell>
-            <TableCell>{discountCode.code}</TableCell>
-            <TableCell>{formatDiscountCode(discountCode)}</TableCell>
-            <TableCell>
-              {discountCode.expiresAt == null ? (
-                <Minus />
-              ) : (
-                formatDateTime(discountCode.expiresAt)
-              )}
-            </TableCell>
-            <TableCell>
-              {discountCode.limit == null ? (
-                <Infinity />
-              ) : (
-                formatNumber(discountCode.limit - discountCode.uses)
-              )}
-            </TableCell>
-            <TableCell>{formatNumber(discountCode._count.orders)}</TableCell>
-            <TableCell>
-              {discountCode.allProducts ? (
-                <Globe />
-              ) : (
-                discountCode.products.map(p => p.name).join(', ')
-              )}
-            </TableCell>
-            <TableCell>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <MoreVertical />
-                  <span className='sr-only'>Actions</span>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  {canDeactivate && (
-                    <>
-                      <ActiveToggleDropdownItem
-                        id={discountCode.id}
-                        isActive={discountCode.isActive}
-                      />
-                      <DropdownMenuSeparator />
-                    </>
-                  )}
-                  <DeleteDropdownItem
-                    id={discountCode.id}
-                    disabled={discountCode._count.orders > 0}
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
+    <div className="rounded-2xl border border-border/70 bg-white/90 shadow-sm">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className='w-0'>
+              <span className='sr-only'>Is Active</span>
+            </TableHead>
+            <TableHead>Code</TableHead>
+            <TableHead>Discount</TableHead>
+            <TableHead>Expires</TableHead>
+            <TableHead>Remaining Uses</TableHead>
+            <TableHead>Orders</TableHead>
+            <TableHead>Products</TableHead>
+            <TableHead className='w-0'>
+              <span className='sr-only'>Actions</span>
+            </TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {discountCodes.map(discountCode => (
+            <TableRow key={discountCode.id}>
+              <TableCell>
+                {discountCode.isActive && !isInactive ? (
+                  <>
+                    <span className='sr-only'>Active</span>
+                    <CheckCircle2 className="text-emerald-500" />
+                  </>
+                ) : (
+                  <>
+                    <span className='sr-only'>Inactive</span>
+                    <XCircle className='text-destructive' />
+                  </>
+                )}
+              </TableCell>
+              <TableCell className="font-medium">{discountCode.code}</TableCell>
+              <TableCell>{formatDiscountCode(discountCode)}</TableCell>
+              <TableCell>
+                {discountCode.expiresAt == null ? (
+                  <Minus className="text-muted-foreground" />
+                ) : (
+                  formatDateTime(discountCode.expiresAt)
+                )}
+              </TableCell>
+              <TableCell>
+                {discountCode.limit == null ? (
+                  <Infinity className="text-muted-foreground" />
+                ) : (
+                  formatNumber(discountCode.limit - discountCode.uses)
+                )}
+              </TableCell>
+              <TableCell>{formatNumber(discountCode._count.orders)}</TableCell>
+              <TableCell>
+                {discountCode.allProducts ? (
+                  <Globe className="text-muted-foreground" />
+                ) : (
+                  discountCode.products.map(p => p.name).join(', ')
+                )}
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="rounded-full p-2 hover:bg-muted">
+                    <MoreVertical className="h-4 w-4" />
+                    <span className='sr-only'>Actions</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {canDeactivate && (
+                      <>
+                        <ActiveToggleDropdownItem
+                          id={discountCode.id}
+                          isActive={discountCode.isActive}
+                        />
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    <DeleteDropdownItem
+                      id={discountCode.id}
+                      disabled={discountCode._count.orders > 0}
+                    />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }

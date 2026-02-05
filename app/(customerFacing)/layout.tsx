@@ -19,7 +19,7 @@ export default function Layout({
       </Nav>
 
       {/* Page content */}
-      <main className="flex-1 container my-6">
+      <main className="flex-1 container my-10">
         {children}
       </main>
 

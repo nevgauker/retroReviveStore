@@ -54,35 +54,58 @@ export function CheckoutForm({ product, discountCode }: CheckoutFormProps) {
   const isDiscounted = amount !== product.priceInCents
 
   return (
-    <div className='max-w-5xl w-full mx-auto space-y-8'>
-      <div className='flex gap-4 items-center'>
-        <div className='aspect-video flex-shrink-0 w-1/3 relative'>
-          <Image
-            src={product.imagePath}
-            fill
-            alt={product.name}
-            className='object-cover'
-          />
-        </div>
-        <div>
-          <div className='text-lg flex gap-4 items-baseline'>
-            <div
-              className={
-                isDiscounted ? 'line-through text-muted-foreground text-sm' : ''
-              }
-            >
-              {formatCurrency(product.priceInCents / 100)}
+    <div className='grid gap-6 lg:grid-cols-[1fr_1fr]'>
+      <Card className="border-border/70 bg-white/90 shadow-sm">
+        <CardHeader>
+          <CardTitle>Order summary</CardTitle>
+          <CardDescription>
+            Download access is delivered instantly after payment.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className='relative h-48 w-full overflow-hidden rounded-xl border border-border/70'>
+            <Image
+              src={product.imagePath}
+              fill
+              alt={product.name}
+              className='object-cover'
+            />
+          </div>
+          <div className="space-y-2">
+            <div className='text-lg flex gap-4 items-baseline'>
+              <div
+                className={
+                  isDiscounted
+                    ? 'line-through text-muted-foreground text-sm'
+                    : 'text-primary font-semibold'
+                }
+              >
+                {formatCurrency(product.priceInCents / 100)}
+              </div>
+              {isDiscounted && (
+                <div className='text-primary font-semibold'>
+                  {formatCurrency(amount / 100)}
+                </div>
+              )}
             </div>
-            {isDiscounted && (
-              <div className=''>{formatCurrency(amount / 100)}</div>
-            )}
+            <h1 className='text-2xl font-semibold'>{product.name}</h1>
+            <div className='line-clamp-3 text-sm text-muted-foreground'>
+              {product.description}
+            </div>
           </div>
-          <h1 className='text-2xl font-bold'>{product.name}</h1>
-          <div className='line-clamp-3 text-muted-foreground'>
-            {product.description}
+          <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+            <span className="rounded-full border border-border/70 bg-secondary px-3 py-1">
+              Secure checkout
+            </span>
+            <span className="rounded-full border border-border/70 bg-secondary px-3 py-1">
+              Instant delivery
+            </span>
+            <span className="rounded-full border border-border/70 bg-secondary px-3 py-1">
+              License included
+            </span>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
       <Elements
         options={{ amount, mode: 'payment', currency: 'usd' }}
         stripe={stripePromise}
@@ -166,7 +189,7 @@ function Form({
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card>
+      <Card className="border-border/70 bg-white/90 shadow-sm">
         <CardHeader>
           <CardTitle>Checkout</CardTitle>
           <CardDescription className='text-destructive'>
@@ -176,16 +199,16 @@ function Form({
             )}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <PaymentElement />
           <div className='mt-4'>
             <LinkAuthenticationElement
               onChange={e => setEmail(e.value.email)}
             />
           </div>
-          <div className='space-y-2 mt-4'>
+          <div className='space-y-2'>
             <Label htmlFor='discountCode'>Coupon</Label>
-            <div className='flex gap-4 items-center'>
+            <div className='flex flex-wrap gap-3 items-center'>
               <Input
                 id='discountCode'
                 type='text'
@@ -205,7 +228,7 @@ function Form({
                 Apply
               </Button>
               {discountCode != null && (
-                <div className='text-muted-foreground'>
+                <div className='text-xs text-muted-foreground'>
                   {formatDiscountCode(discountCode)} discount
                 </div>
               )}
