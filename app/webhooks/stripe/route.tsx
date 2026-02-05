@@ -4,16 +4,29 @@ import Stripe from 'stripe'
 import { Resend } from 'resend'
 import PurchaseReceiptEmail from '@/email/PurchaseReceipt'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, { apiVersion: '2024-04-10' })
-const resend = new Resend(process.env.RESEND_API_KEY as string)
+function getStripeClient(stripeSecretKey: string) {
+  return new Stripe(stripeSecretKey, { apiVersion: '2024-04-10' })
+}
 
-// Verify required environment variables
-if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET || !process.env.RESEND_API_KEY || !process.env.SENDER_EMAIL) {
-  throw new Error("Missing necessary environment variables. Please check your .env configuration.")
+function getResendClient(resendApiKey: string) {
+  return new Resend(resendApiKey)
 }
 
 export async function POST(req: NextRequest) {
   try {
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+    const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+    const resendApiKey = process.env.RESEND_API_KEY
+    const senderEmail = process.env.SENDER_EMAIL
+
+    if (!stripeSecretKey || !stripeWebhookSecret || !resendApiKey || !senderEmail) {
+      console.error("Missing necessary environment variables. Please check your .env configuration.")
+      return new NextResponse('Server misconfigured', { status: 500 })
+    }
+
+    const stripe = getStripeClient(stripeSecretKey)
+    const resend = getResendClient(resendApiKey)
+
     const signature = req.headers.get('stripe-signature')
     if (!signature) {
       return new NextResponse('Missing Stripe signature', { status: 400 })
@@ -23,7 +36,7 @@ export async function POST(req: NextRequest) {
     let event: Stripe.Event
 
     try {
-      event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET as string)
+      event = stripe.webhooks.constructEvent(body, signature, stripeWebhookSecret)
     } catch (err) {
       console.error("Stripe signature verification failed.", err)
       return new NextResponse('Signature verification failed', { status: 400 })
@@ -74,7 +87,7 @@ export async function POST(req: NextRequest) {
 
     try {
       await resend.emails.send({
-        from: `Support <${process.env.SENDER_EMAIL}>`,
+        from: `Support <${senderEmail}>`,
         to: email,
         subject: 'Order Confirmation',
         react: (

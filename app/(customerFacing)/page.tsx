@@ -9,8 +9,8 @@ import { cache } from "@/lib/cache"
 import db from "@/db/db"
 import { Product } from "@prisma/client"
 
-export default function HomePage() {
-  const cookieStore = cookies()
+export default async function HomePage() {
+  const cookieStore = await cookies()
   const popupShown = cookieStore.get("popupShown")
 
   const getMostPopularProducts = cache(

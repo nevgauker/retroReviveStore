@@ -8,7 +8,6 @@ import {
   Section,
   Text,
 } from '@react-email/components'
-import { useEffect, useState } from 'react';
 
 type OrderInformationProps = {
   order: { id: string; createdAt: Date; pricePaidInCents: number }
